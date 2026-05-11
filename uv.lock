@@ -1503,19 +1503,14 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "climate-api" },
-]
-
-[package.optional-dependencies]
-providers = [
     { name = "dhis2eo" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "climate-api", git = "https://github.com/dhis2/climate-api.git?branch=main" },
-    { name = "dhis2eo", marker = "extra == 'providers'" },
+    { name = "dhis2eo", specifier = ">=1.2.1" },
 ]
-provides-extras = ["providers"]
 
 [[package]]
 name = "numcodecs"

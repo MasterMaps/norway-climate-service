@@ -5,12 +5,7 @@ requires-python = ">=3.13"
 description = "Open Climate Service instance for Norway"
 dependencies = [
     "climate-api @ git+https://github.com/dhis2/climate-api.git",
-]
-
-[project.optional-dependencies]
-# Install when dhis2eo is available to enable ERA5-Land and CHIRPS ingestion.
-providers = [
-    "dhis2eo",
+    "dhis2eo>=1.2.1",
 ]
 
 [tool.uv]
