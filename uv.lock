@@ -400,7 +400,7 @@ wheels = [
 [[package]]
 name = "climate-api"
 version = "0.1.0a1"
-source = { git = "https://github.com/dhis2/climate-api.git?branch=main#8d0d3e6d9840abbd40e566d81cd36d36b94c7175" }
+source = { git = "https://github.com/dhis2/climate-api.git?branch=fix%2Fmap-viewer-time-steps-no-limit#6d01def099b0132792d07f36bfde9d2ebb9bb492" }
 dependencies = [
     { name = "earthkit-transforms" },
     { name = "fastapi" },
@@ -1508,7 +1508,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "climate-api", git = "https://github.com/dhis2/climate-api.git?branch=main" },
+    { name = "climate-api", git = "https://github.com/dhis2/climate-api.git?branch=fix%2Fmap-viewer-time-steps-no-limit" },
     { name = "dhis2eo", specifier = ">=1.2.1" },
 ]
 

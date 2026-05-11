@@ -12,5 +12,5 @@ dependencies = [
 package = false
 
 [tool.uv.sources]
-# Pin climate-api to main until a release is published on PyPI.
-climate-api = { git = "https://github.com/dhis2/climate-api.git", branch = "main" }
+# Pin climate-api to the fix/map-viewer-time-steps-no-limit branch for testing.
+climate-api = { git = "https://github.com/dhis2/climate-api.git", branch = "fix/map-viewer-time-steps-no-limit" }
