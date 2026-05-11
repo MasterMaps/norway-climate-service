@@ -1,0 +1,55 @@
+- id: senorge_temperature_daily
+  name: Daily mean temperature (seNorge 2018)
+  short_name: Mean temperature
+  variable: tg
+  period_type: daily
+  sync:
+    kind: temporal
+    execution: append
+  extents:
+    spatial:
+      bbox: [4.5, 57.9, 31.1, 71.2]
+    temporal:
+      begin: "1957-01-01"
+      resolution: P1D
+  ingestion:
+    function: senorge.daily.download
+    default_params:
+      variable: tg
+  source_crs: EPSG:32633
+  units: degC
+  resolution: 1 km x 1 km
+  source: seNorge 2018
+  source_url: https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html
+  display:
+    colormap: rdbu_r
+    range: [-30.0, 30.0]
+    nodata: -999.99
+
+- id: senorge_precipitation_daily
+  name: Daily precipitation (seNorge 2018)
+  short_name: Precipitation
+  variable: rr
+  period_type: daily
+  sync:
+    kind: temporal
+    execution: append
+  extents:
+    spatial:
+      bbox: [4.5, 57.9, 31.1, 71.2]
+    temporal:
+      begin: "1957-01-01"
+      resolution: P1D
+  ingestion:
+    function: senorge.daily.download
+    default_params:
+      variable: rr
+  source_crs: EPSG:32633
+  units: mm
+  resolution: 1 km x 1 km
+  source: seNorge 2018
+  source_url: https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html
+  display:
+    colormap: blues
+    range: [0.0, 50.0]
+    nodata: -9999.0

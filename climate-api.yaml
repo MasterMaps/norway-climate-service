@@ -1,0 +1,8 @@
+extent:
+  name: Norway
+  bbox: [3.0, 57.0, 32.0, 72.5]
+  country_code: NOR
+
+data_dir: ./data
+crs: EPSG:32633
+plugins_dir: ./plugins/

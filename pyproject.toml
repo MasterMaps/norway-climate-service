@@ -1,0 +1,25 @@
+[build-system]
+requires = ["uv_build>=0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
+[project]
+name = "norway-climate-service"
+version = "0.1.0"
+requires-python = ">=3.13"
+description = "Open Climate Service instance for Norway"
+dependencies = [
+    "climate-api @ git+https://github.com/dhis2/climate-api.git",
+]
+
+[project.optional-dependencies]
+# Install when dhis2eo is available to enable ERA5-Land and CHIRPS ingestion.
+providers = [
+    "dhis2eo",
+]
+
+[tool.uv.sources]
+# Pin climate-api to main until a release is published on PyPI.
+climate-api = { git = "https://github.com/dhis2/climate-api.git", branch = "main" }

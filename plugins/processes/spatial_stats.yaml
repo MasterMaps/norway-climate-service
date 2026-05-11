@@ -1,0 +1,3 @@
+- id: spatial_mean
+  name: Spatial statistics
+  execution_function: processes.spatial_stats.execute_spatial_mean
