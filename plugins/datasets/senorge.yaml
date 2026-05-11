@@ -13,7 +13,7 @@
       begin: "1957-01-01"
       resolution: P1D
   ingestion:
-    function: senorge.daily.download
+    function: plugins.datasets.senorge.download
     default_params:
       variable: tg
   source_crs: EPSG:32633
@@ -41,7 +41,7 @@
       begin: "1957-01-01"
       resolution: P1D
   ingestion:
-    function: senorge.daily.download
+    function: datasets.senorge.download
     default_params:
       variable: rr
   source_crs: EPSG:32633
