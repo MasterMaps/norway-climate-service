@@ -441,7 +441,7 @@ wheels = [
 [[package]]
 name = "climate-api"
 version = "0.1.0a1"
-source = { git = "https://github.com/dhis2/climate-api.git?branch=feat%2Fgefs-derived-forecast-artifact#f28b60735e46967ad3dfe61651b901d399ecd218" }
+source = { git = "https://github.com/dhis2/climate-api.git?branch=feat%2Fgefs-derived-forecast-artifact#e23977fb08a4671b2041087039149632dad64598" }
 dependencies = [
     { name = "dhis2eo" },
     { name = "earthkit-transforms" },
