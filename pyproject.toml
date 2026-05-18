@@ -4,7 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.13"
 description = "Open Climate Service instance for Norway"
 dependencies = [
-    "climate-api[forecast] @ git+https://github.com/dhis2/climate-api.git",
+    "climate-api @ git+https://github.com/dhis2/climate-api.git",
     "dhis2eo>=1.2.1",
 ]
 
@@ -12,5 +12,4 @@ dependencies = [
 package = false
 
 [tool.uv.sources]
-# Pin climate-api to the feature branch until merged to main and released on PyPI.
-climate-api = { git = "https://github.com/dhis2/climate-api.git", branch = "feat/gefs-derived-forecast-artifact" }
+climate-api = { git = "https://github.com/dhis2/climate-api.git", branch = "main" }
