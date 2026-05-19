@@ -13,6 +13,9 @@
       begin: "1957-01-01"
       resolution: P1D
   ingestion:
+    plugin: datasets.senorge.SeNorgePlugin
+    params:
+      variable: tg
     function: datasets.senorge.download
     default_params:
       variable: tg
@@ -41,6 +44,9 @@
       begin: "1957-01-01"
       resolution: P1D
   ingestion:
+    plugin: datasets.senorge.SeNorgePlugin
+    params:
+      variable: rr
     function: datasets.senorge.download
     default_params:
       variable: rr

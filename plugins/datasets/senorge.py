@@ -1,23 +1,33 @@
-"""SeNorge 2018 daily climate data downloader.
+"""SeNorge 2018 daily climate data — downloader and IngestionPlugin.
 
 Downloads gridded daily temperature (tg) and precipitation (rr) from the
-Norwegian Meteorological Institute's THREDDS OPeNDAP service and saves
-monthly NetCDF files in the native UTM33 grid (EPSG:32633).
+Norwegian Meteorological Institute's THREDDS OPeNDAP service.
 
 Source: https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/
 Coverage: Norway only, daily from 1957-01-01.
-Native resolution: 1 km x 1 km on UTM33 grid.
+Native resolution: 1 km x 1 km on UTM33 grid (EPSG:32633).
+
+THREDDS serves annual NetCDF files over OPeNDAP.  The full Norway grid is
+always returned — no bbox subsetting at the source.  One plugin period is one
+calendar month extracted from the annual file.  Dimension names are uppercase
+X/Y in the source; they are renamed to lowercase x/y before writing.
+Timestamps are at 06:00 UTC (seNorge convention for meteorological days).
 """
 
 from __future__ import annotations
 
+import asyncio
+import calendar
 import logging
-from calendar import monthrange
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from pathlib import Path
+from typing import Any
 
 import pyproj
 import xarray as xr
+
+from climate_api.ingest.protocol import GridSpec
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +36,90 @@ SENORGE_CRS = "EPSG:32633"
 
 # SeNorge data starts in 1957; earlier years do not exist.
 DATA_START_YEAR = 1957
+
+_NODATA = {"tg": -999.99, "rr": -9999.0}
+
+_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="senorge")
+
+
+class SeNorgePlugin:
+    """IngestionPlugin for seNorge 2018 daily temperature and precipitation.
+
+    Fetches one calendar month at a time from THREDDS OPeNDAP annual files.
+    The full Norway grid is always returned regardless of bbox; bbox is
+    accepted to satisfy the protocol but applied only for spatial subsetting
+    after the OPeNDAP load.
+
+    Args:
+        variable: seNorge variable name — 'tg' (daily mean temperature, °C)
+            or 'rr' (daily precipitation, mm).
+    """
+
+    max_concurrency = 1
+    commit_batch_size = 1
+    rechunk_time = 30
+
+    def __init__(self, variable: str) -> None:
+        if variable not in _NODATA:
+            raise ValueError(f"variable must be 'tg' or 'rr', got {variable!r}")
+        self.variable = variable
+
+    async def probe(self, bbox: list[float], **_: Any) -> GridSpec:
+        return await asyncio.get_running_loop().run_in_executor(
+            _executor, self._probe_sync, bbox
+        )
+
+    async def periods(self, start: str, end: str) -> list[str]:
+        return self._build_periods(start, end)
+
+    async def fetch_period(self, period_id: str, bbox: list[float], **_: Any) -> xr.Dataset:
+        return await asyncio.get_running_loop().run_in_executor(
+            _executor, self._fetch_sync, period_id, bbox
+        )
+
+    def _probe_sync(self, bbox: list[float]) -> GridSpec:
+        url = f"{THREDDS_BASE}/seNorge2018_{DATA_START_YEAR}.nc"
+        logger.info("Probing seNorge grid from %s", url)
+        utm_bbox = _wgs84_bbox_to_utm33(bbox)
+        ds = xr.open_dataset(url, engine="netcdf4", chunks={})
+        ds = _prepare(ds, utm_bbox, self.variable)
+        return GridSpec(
+            shape=(ds.sizes["y"], ds.sizes["x"]),
+            crs=32633,
+            dtype=ds[self.variable].dtype,
+            nodata=_NODATA[self.variable],
+        )
+
+    def _fetch_sync(self, period_id: str, bbox: list[float]) -> xr.Dataset:
+        year, month = int(period_id[:4]), int(period_id[5:7])
+        _, last_day = calendar.monthrange(year, month)
+        utm_bbox = _wgs84_bbox_to_utm33(bbox)
+        url = f"{THREDDS_BASE}/seNorge2018_{year}.nc"
+        logger.info("Fetching seNorge %s from %s", period_id, url)
+        ds = xr.open_dataset(url, engine="netcdf4", chunks={})
+        ds = _prepare(ds, utm_bbox, self.variable)
+        ds = (
+            ds.sel(time=slice(f"{year}-{month:02d}-01", f"{year}-{month:02d}-{last_day:02d}"))
+            .load()
+        )
+        for name in list(ds.data_vars) + list(ds.coords):
+            ds[name].encoding.clear()
+        ds["time"].encoding.update({"units": "days since 1970-01-01", "dtype": "int32"})
+        return ds
+
+    def _build_periods(self, start: str, end: str) -> list[str]:
+        start_year = max(int(start[:4]), DATA_START_YEAR)
+        start_month = int(start[5:7]) if len(start) >= 7 else 1
+        end_year = int(end[:4])
+        end_month = int(end[5:7]) if len(end) >= 7 else 12
+        months: list[str] = []
+        y, m = start_year, start_month
+        while (y, m) <= (end_year, end_month):
+            months.append(f"{y:04d}-{m:02d}")
+            m += 1
+            if m > 12:
+                y, m = y + 1, 1
+        return months
 
 
 def download(
