@@ -400,7 +400,7 @@ wheels = [
 [[package]]
 name = "climate-api"
 version = "0.1.0a1"
-source = { git = "https://github.com/dhis2/climate-api.git?branch=feat%2Ficechunk-ingest#30b47f350c8c6119852b108f8cdc8f7467722147" }
+source = { git = "https://github.com/dhis2/climate-api.git?rev=feat%2Ficechunk-ingest#36804be7fd79d6fc7fb39543c8d30852de2465ed" }
 dependencies = [
     { name = "dhis2eo" },
     { name = "earthkit-transforms" },
@@ -1542,7 +1542,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "climate-api", git = "https://github.com/dhis2/climate-api.git?branch=feat%2Ficechunk-ingest" },
+    { name = "climate-api", git = "https://github.com/dhis2/climate-api.git?rev=feat%2Ficechunk-ingest" },
     { name = "dhis2eo", specifier = ">=1.2.1" },
 ]
 
