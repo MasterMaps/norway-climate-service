@@ -16,9 +16,6 @@
     plugin: datasets.senorge.SeNorgePlugin
     params:
       variable: tg
-    function: datasets.senorge.download
-    default_params:
-      variable: tg
   source_crs: EPSG:32633
   units: degC
   resolution: 1 km x 1 km
@@ -46,9 +43,6 @@
   ingestion:
     plugin: datasets.senorge.SeNorgePlugin
     params:
-      variable: rr
-    function: datasets.senorge.download
-    default_params:
       variable: rr
   source_crs: EPSG:32633
   units: mm

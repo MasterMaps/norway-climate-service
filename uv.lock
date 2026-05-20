@@ -400,9 +400,8 @@ wheels = [
 [[package]]
 name = "climate-api"
 version = "0.1.0a1"
-source = { git = "https://github.com/dhis2/climate-api.git?branch=feat%2Ficechunk-ingest#fdcd9158f0dc087ee16764310a287f5964b9bb19" }
+source = { git = "https://github.com/dhis2/climate-api.git?branch=feat%2Ficechunk-ingest#981966a756d8675a0c4e26d4183e7dea7b76c1ca" }
 dependencies = [
-    { name = "dhis2eo" },
     { name = "earthkit-transforms" },
     { name = "fastapi" },
     { name = "geojson-pydantic" },
