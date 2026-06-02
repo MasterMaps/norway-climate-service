@@ -20,13 +20,13 @@ from __future__ import annotations
 
 import logging
 import math
-from datetime import date
+from datetime import date, timedelta
 from typing import Any
 
 import pyproj
 import xarray as xr
 
-from climate_api.ingest.protocol import GridSpec, enumerate_periods
+from open_climate_service.streaming.protocol import GridSpec
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ class SeNorgePlugin:
         self._cache_year: int | None = None
         self._cache_ds: xr.Dataset | None = None
 
-    def probe(self, bbox: list[float], **_: Any) -> GridSpec:
+    async def probe(self, bbox: list[float], **_: Any) -> GridSpec:
         """Derive GridSpec from seNorge's known 1 km UTM33 resolution — no data transfer."""
         utm_bbox = _wgs84_bbox_to_utm33(bbox)
         xmin, ymin, xmax, ymax = utm_bbox
@@ -75,14 +75,15 @@ class SeNorgePlugin:
             crs=32633,
             dtype="float32",
             nodata=_NODATA[self.variable],
+            time_dim="time",
         )
 
-    def periods(self, start: str, end: str) -> list[str]:
+    async def periods(self, start: str, end: str) -> list[str]:
         """Return daily period IDs clamped to seNorge availability (1957-01-01 onwards)."""
         clamped_start = max(start[:10], f"{DATA_START_YEAR}-01-01")
-        return enumerate_periods(clamped_start, end, "daily")
+        return _daily_dates(clamped_start, end[:10])
 
-    def fetch_period(self, period_id: str, bbox: list[float], **_: Any) -> xr.Dataset:
+    async def fetch_period(self, period_id: str, bbox: list[float], **_: Any) -> xr.Dataset:
         """Fetch one day from the annual THREDDS OPeNDAP file, clip to bbox."""
         year = int(period_id[:4])
         utm_bbox = _wgs84_bbox_to_utm33(bbox)
@@ -96,6 +97,18 @@ class SeNorgePlugin:
         day = period_id[:10]
         logger.info("Fetching seNorge %s", day)
         return ds.sel(time=slice(day, day)).load()
+
+
+def _daily_dates(start: str, end: str) -> list[str]:
+    """Return ISO date strings for every day in [start, end]."""
+    d_start = date.fromisoformat(start)
+    d_end = date.fromisoformat(end)
+    results = []
+    current = d_start
+    while current <= d_end:
+        results.append(current.isoformat())
+        current += timedelta(days=1)
+    return results
 
 
 def _wgs84_bbox_to_utm33(bbox: list[float]) -> tuple[float, float, float, float]:
