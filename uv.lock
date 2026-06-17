@@ -1708,7 +1708,7 @@ wheels = [
 [[package]]
 name = "open-climate-service"
 version = "0.1.0"
-source = { git = "https://github.com/dhis2/open-climate-service.git?branch=refactor%2Fsimplify-plugin-contract#0044d253d774854f4502894a390ecae87bf8f9fb" }
+source = { git = "https://github.com/dhis2/open-climate-service.git?branch=refactor%2Fsimplify-plugin-contract#6f96425d74a097942c3118f2367ed771b6cdc264" }
 dependencies = [
     { name = "httpx" },
     { name = "pystac" },

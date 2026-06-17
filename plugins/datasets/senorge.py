@@ -20,15 +20,13 @@ days).
 from __future__ import annotations
 
 import logging
-import math
 from datetime import date, timedelta
 from typing import Any
 
-import numpy as np
 import pyproj
 import xarray as xr
 
-from open_climate_service.streaming import BaseDatasetPlugin, GridSpec
+from open_climate_service.streaming import BaseDatasetPlugin
 
 logger = logging.getLogger(__name__)
 
@@ -37,10 +35,8 @@ SENORGE_CRS = "EPSG:32633"
 
 # SeNorge data starts in 1957; earlier years do not exist.
 DATA_START_YEAR = 1957
-# Native grid resolution in metres (1 km × 1 km UTM33).
-_SENORGE_RES_M = 1000.0
 
-_NODATA = {"tg": -999.99, "rr": -9999.0}
+_VARIABLES = ("tg", "rr")
 
 
 class SeNorgePlugin(BaseDatasetPlugin):
@@ -50,9 +46,12 @@ class SeNorgePlugin(BaseDatasetPlugin):
     a given year is opened once and cached on the instance so that fetching a
     full year causes only a single OPeNDAP connection.
 
-    A custom ``probe`` is retained because seNorge is on a projected UTM33
-    (EPSG:32633) grid: the grid-inference fallback assumes EPSG:4326, so the
-    CRS must be declared explicitly rather than inferred from a fetched period.
+    No ``probe`` is declared: the orchestrator infers the grid (shape, dtype,
+    and nodata from the source ``_FillValue``) from the first fetched period.
+    Only the CRS cannot be inferred from the fetched data — seNorge is on a
+    projected UTM33 grid and the data carries no CRS once the auxiliary
+    longitude/latitude coordinates are dropped — so it is declared via the
+    ``crs`` class attribute.
 
     Args:
         variable: seNorge variable name — 'tg' (daily mean temperature, °C)
@@ -61,26 +60,14 @@ class SeNorgePlugin(BaseDatasetPlugin):
 
     max_concurrency = 1
     commit_batch_size = 30
+    crs = 32633
 
     def __init__(self, variable: str, **_: Any) -> None:
-        if variable not in _NODATA:
+        if variable not in _VARIABLES:
             raise ValueError(f"variable must be 'tg' or 'rr', got {variable!r}")
         self.variable = variable
         self._cache_year: int | None = None
         self._cache_ds: xr.Dataset | None = None
-
-    async def probe(self, bbox: list[float], **_: Any) -> GridSpec:
-        """Derive GridSpec from seNorge's known 1 km UTM33 resolution — no data transfer."""
-        utm_bbox = _wgs84_bbox_to_utm33(bbox)
-        xmin, ymin, xmax, ymax = utm_bbox
-        nx = max(1, math.ceil((xmax - xmin) / _SENORGE_RES_M))
-        ny = max(1, math.ceil((ymax - ymin) / _SENORGE_RES_M))
-        return GridSpec(
-            shape=(ny, nx),
-            crs=32633,
-            dtype=np.dtype("float32"),
-            nodata=_NODATA[self.variable],
-        )
 
     async def periods(self, start: str, end: str) -> list[str]:
         """Return daily period IDs clamped to seNorge availability (1957-01-01 onwards)."""
