@@ -26,4 +26,4 @@ override-dependencies = [
 ]
 
 [tool.uv.sources]
-open-climate-service = { git = "https://github.com/dhis2/open-climate-service.git", branch = "main" }
+open-climate-service = { git = "https://github.com/dhis2/open-climate-service.git", branch = "refactor/simplify-plugin-contract" }

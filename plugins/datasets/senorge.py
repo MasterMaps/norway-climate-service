@@ -1,4 +1,4 @@
-"""SeNorge 2018 daily climate data — IngestionPlugin.
+"""SeNorge 2018 daily climate data — BaseDatasetPlugin.
 
 Downloads gridded daily temperature (tg) and precipitation (rr) from the
 Norwegian Meteorological Institute's THREDDS OPeNDAP service.
@@ -24,10 +24,11 @@ import math
 from datetime import date, timedelta
 from typing import Any
 
+import numpy as np
 import pyproj
 import xarray as xr
 
-from open_climate_service.streaming.protocol import GridSpec
+from open_climate_service.streaming import BaseDatasetPlugin, GridSpec
 
 logger = logging.getLogger(__name__)
 
@@ -42,12 +43,16 @@ _SENORGE_RES_M = 1000.0
 _NODATA = {"tg": -999.99, "rr": -9999.0}
 
 
-class SeNorgePlugin:
-    """IngestionPlugin for seNorge 2018 daily temperature and precipitation.
+class SeNorgePlugin(BaseDatasetPlugin):
+    """BaseDatasetPlugin for seNorge 2018 daily temperature and precipitation.
 
     Each period is one calendar day (YYYY-MM-DD).  The annual NetCDF file for
     a given year is opened once and cached on the instance so that fetching a
     full year causes only a single OPeNDAP connection.
+
+    A custom ``probe`` is retained because seNorge is on a projected UTM33
+    (EPSG:32633) grid: the grid-inference fallback assumes EPSG:4326, so the
+    CRS must be declared explicitly rather than inferred from a fetched period.
 
     Args:
         variable: seNorge variable name — 'tg' (daily mean temperature, °C)
@@ -56,9 +61,8 @@ class SeNorgePlugin:
 
     max_concurrency = 1
     commit_batch_size = 30
-    rechunk_time = 30
 
-    def __init__(self, variable: str) -> None:
+    def __init__(self, variable: str, **_: Any) -> None:
         if variable not in _NODATA:
             raise ValueError(f"variable must be 'tg' or 'rr', got {variable!r}")
         self.variable = variable
@@ -74,9 +78,8 @@ class SeNorgePlugin:
         return GridSpec(
             shape=(ny, nx),
             crs=32633,
-            dtype="float32",
+            dtype=np.dtype("float32"),
             nodata=_NODATA[self.variable],
-            time_dim="t",
         )
 
     async def periods(self, start: str, end: str) -> list[str]:
