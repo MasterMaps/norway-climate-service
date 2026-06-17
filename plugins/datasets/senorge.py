@@ -23,11 +23,11 @@ WGS84 bbox onto the UTM33 grid for the spatial clip.
 from __future__ import annotations
 
 import logging
-from datetime import date, timedelta
 from typing import Any
 
 import xarray as xr
 
+from open_climate_service.shared.time import daily_period_ids
 from open_climate_service.streaming import BaseDatasetPlugin, normalize_period
 
 logger = logging.getLogger(__name__)
@@ -72,7 +72,7 @@ class SeNorgePlugin(BaseDatasetPlugin):
     async def periods(self, start: str, end: str) -> list[str]:
         """Return daily period IDs clamped to seNorge availability (1957-01-01 onwards)."""
         clamped_start = max(start[:10], f"{DATA_START_YEAR}-01-01")
-        return _daily_dates(clamped_start, end[:10])
+        return daily_period_ids(clamped_start, end[:10])
 
     async def fetch_period(self, period_id: str, bbox: list[float], **_: Any) -> xr.Dataset:
         """Fetch one day from the annual THREDDS OPeNDAP file, clipped to bbox."""
@@ -90,15 +90,3 @@ class SeNorgePlugin(BaseDatasetPlugin):
         logger.info("Fetching seNorge %s", day)
         ds = self._cache_ds[[self.variable]].sel(time=slice(day, day)).rio.write_crs(self.crs)
         return normalize_period(ds, variable=self.variable, bbox=bbox).load()
-
-
-def _daily_dates(start: str, end: str) -> list[str]:
-    """Return ISO date strings for every day in [start, end]."""
-    d_start = date.fromisoformat(start)
-    d_end = date.fromisoformat(end)
-    results = []
-    current = d_start
-    while current <= d_end:
-        results.append(current.isoformat())
-        current += timedelta(days=1)
-    return results
