@@ -11,9 +11,10 @@ THREDDS serves annual NetCDF files over OPeNDAP.  The full Norway grid is
 always returned — no bbox subsetting at the source.  One plugin period is one
 calendar day; the annual file is opened once per year and cached on the plugin
 instance so that fetching 365 consecutive days causes only one OPeNDAP
-connection per year.  Dimension names are uppercase X/Y in the source; they
-are renamed to lowercase x/y before writing.  Timestamps are at 06:00 UTC
-(seNorge convention for meteorological days).
+connection per year.  Dimension names are uppercase X/Y and ``time`` in the
+source; they are renamed to lowercase x/y and the canonical ``t`` before
+writing.  Timestamps are at 06:00 UTC (seNorge convention for meteorological
+days).
 """
 
 from __future__ import annotations
@@ -75,7 +76,7 @@ class SeNorgePlugin:
             crs=32633,
             dtype="float32",
             nodata=_NODATA[self.variable],
-            time_dim="time",
+            time_dim="t",
         )
 
     async def periods(self, start: str, end: str) -> list[str]:
@@ -96,7 +97,7 @@ class SeNorgePlugin:
         ds = _prepare(self._cache_ds, utm_bbox, self.variable)
         day = period_id[:10]
         logger.info("Fetching seNorge %s", day)
-        return ds.sel(time=slice(day, day)).load()
+        return ds.sel(t=slice(day, day)).load()
 
 
 def _daily_dates(start: str, end: str) -> list[str]:
@@ -123,9 +124,11 @@ def _wgs84_bbox_to_utm33(bbox: list[float]) -> tuple[float, float, float, float]
 def _prepare(ds: xr.Dataset, utm_bbox: tuple[float, float, float, float], variable: str) -> xr.Dataset:
     """Subset spatially, keep only the target variable, and normalise dimension names.
 
-    The native seNorge grid uses uppercase X/Y dimension names and includes
-    2D auxiliary longitude/latitude coordinate arrays.  The orchestrator
-    expects lowercase x/y spatial dimensions and no 2D auxiliary coordinates.
+    The native seNorge grid uses uppercase X/Y dimension names, a ``time``
+    dimension, and 2D auxiliary longitude/latitude coordinate arrays.  The
+    orchestrator and the rest of the stack expect lowercase x/y spatial
+    dimensions, the canonical ``t`` time dimension, and no 2D auxiliary
+    coordinates.
     """
     x_min, y_min, x_max, y_max = utm_bbox
 
@@ -143,9 +146,9 @@ def _prepare(ds: xr.Dataset, utm_bbox: tuple[float, float, float, float], variab
     if drop_vars:
         ds = ds.drop_vars(drop_vars)
 
-    ds = ds.rename({"X": "x", "Y": "y"})
+    ds = ds.rename({"X": "x", "Y": "y", "time": "t"})
 
-    if "time" in ds.coords:
-        ds["time"] = ds["time"].astype("datetime64[ns]")
+    if "t" in ds.coords:
+        ds["t"] = ds["t"].astype("datetime64[ns]")
 
     return ds
