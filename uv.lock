@@ -1708,7 +1708,7 @@ wheels = [
 [[package]]
 name = "open-climate-service"
 version = "0.1.0"
-source = { git = "https://github.com/dhis2/open-climate-service.git?branch=refactor%2Fsimplify-plugin-contract#f7386510e4cc868948928b460337b1b2e8076474" }
+source = { git = "https://github.com/dhis2/open-climate-service.git?branch=refactor%2Fsimplify-plugin-contract#6c3f40ce7a262e21304aa57bd1342d3daeb58f5f" }
 dependencies = [
     { name = "httpx" },
     { name = "pystac" },
@@ -1717,14 +1717,13 @@ dependencies = [
 [package.optional-dependencies]
 server = [
     { name = "dask-geopandas" },
-    { name = "ecmwf-datastores-client" },
+    { name = "dhis2eo" },
     { name = "fastapi" },
     { name = "geojson-pydantic" },
     { name = "geozarr-toolkit" },
     { name = "icechunk" },
     { name = "jinja2" },
     { name = "metpy" },
-    { name = "netcdf4" },
     { name = "odc-geo" },
     { name = "odc-stac" },
     { name = "openeo-pg-parser-networkx" },

@@ -27,8 +27,7 @@ from typing import Any
 
 import xarray as xr
 
-from open_climate_service.shared.time import daily_period_ids
-from open_climate_service.streaming import BaseDatasetPlugin, normalize_period
+from open_climate_service.streaming import BaseDatasetPlugin, daily_period_ids, normalize_period
 
 logger = logging.getLogger(__name__)
 
