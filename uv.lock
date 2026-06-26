@@ -1725,7 +1725,7 @@ wheels = [
 [[package]]
 name = "open-climate-service"
 version = "0.1.0"
-source = { git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fopeneo-anomaly#574627ace27c53992d79e75a3cf758e46c93eec9" }
+source = { git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fopeneo-anomaly#93340a437a9290f25715f241b087723f1fe57dfb" }
 dependencies = [
     { name = "httpx" },
     { name = "pystac" },
