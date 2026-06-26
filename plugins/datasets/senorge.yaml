@@ -57,3 +57,23 @@
     colormap: blues
     range: [0.0, 50.0]
     nodata: -9999.0
+
+# Day-of-year temperature normal (1991–2020) produced from the ingested
+# senorge_temperature_daily store by the `climate_normal` openEO workflow. Static
+# output template — no ingestion plugin; the data is written by save_result. The
+# reference period is encoded in the id; add a copy when a new period is adopted.
+- id: senorge_temperature_daily_normal_1991_2020
+  name: Daily mean temperature normal (seNorge 2018, 1991–2020)
+  short_name: Temperature daily normal
+  variable: tg
+  period_type: climatology
+  sync:
+    kind: static
+  source_crs: EPSG:32633
+  units: degC
+  resolution: 1 km x 1 km
+  source: Derived (climate_normal workflow)
+  display:
+    colormap: rdbu_r
+    range: [-30.0, 30.0]
+    nodata: -999.99
