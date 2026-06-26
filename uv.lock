@@ -684,6 +684,23 @@ wheels = [
 ]
 
 [[package]]
+name = "earthkit-transforms"
+version = "0.5.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "array-api-compat" },
+    { name = "earthkit-data" },
+    { name = "earthkit-utils" },
+    { name = "geopandas" },
+    { name = "numpy" },
+    { name = "xarray" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ca/5e/f34a8c234c3ec2687482f522be90b0eeea8f8527898fa6649d9ccac72e85/earthkit_transforms-0.5.4.tar.gz", hash = "sha256:784a2154427baf49baafcc4b2fb44cc945e6fc92f6f93f46ad0ac3d2dee95558", size = 81956, upload-time = "2026-03-25T16:55:29.447Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e6/1b/0c2dff858eba3a04f7492977d4871241f362e90a92585a3512af0db59263/earthkit_transforms-0.5.4-py3-none-any.whl", hash = "sha256:6e02886156395e50aad907f42b994bd922b51fd39fd63d96d4f27af7337e7c92", size = 44860, upload-time = "2026-03-25T16:55:28.542Z" },
+]
+
+[[package]]
 name = "earthkit-utils"
 version = "0.1.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1550,7 +1567,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "dhis2eo", specifier = ">=1.2.1" },
-    { name = "open-climate-service", extras = ["server"], git = "https://github.com/dhis2/open-climate-service.git?branch=refactor%2Fsimplify-plugin-contract" },
+    { name = "open-climate-service", extras = ["server"], git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fopeneo-anomaly" },
 ]
 
 [[package]]
@@ -1708,7 +1725,7 @@ wheels = [
 [[package]]
 name = "open-climate-service"
 version = "0.1.0"
-source = { git = "https://github.com/dhis2/open-climate-service.git?branch=refactor%2Fsimplify-plugin-contract#6c3f40ce7a262e21304aa57bd1342d3daeb58f5f" }
+source = { git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fopeneo-anomaly#574627ace27c53992d79e75a3cf758e46c93eec9" }
 dependencies = [
     { name = "httpx" },
     { name = "pystac" },
@@ -1717,13 +1734,15 @@ dependencies = [
 [package.optional-dependencies]
 server = [
     { name = "dask-geopandas" },
-    { name = "dhis2eo" },
+    { name = "earthkit-transforms" },
+    { name = "ecmwf-datastores-client" },
     { name = "fastapi" },
     { name = "geojson-pydantic" },
     { name = "geozarr-toolkit" },
     { name = "icechunk" },
     { name = "jinja2" },
     { name = "metpy" },
+    { name = "netcdf4" },
     { name = "odc-geo" },
     { name = "odc-stac" },
     { name = "openeo-pg-parser-networkx" },

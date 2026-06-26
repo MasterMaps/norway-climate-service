@@ -22,9 +22,12 @@ WGS84 bbox onto the UTM33 grid for the spatial clip.
 
 from __future__ import annotations
 
+import asyncio
 import logging
+from datetime import date
 from typing import Any
 
+import numpy as np
 import xarray as xr
 
 from open_climate_service.streaming import BaseDatasetPlugin, daily_period_ids, normalize_period
@@ -69,9 +72,35 @@ class SeNorgePlugin(BaseDatasetPlugin):
         self._cache_ds: xr.Dataset | None = None
 
     async def periods(self, start: str, end: str) -> list[str]:
-        """Return daily period IDs clamped to seNorge availability (1957-01-01 onwards)."""
+        """Return daily period IDs within seNorge availability (1957-01-01 .. latest published).
+
+        The end is capped at the latest published day (``_latest_available``), so the
+        engine never enumerates days the archive hasn't released yet — which would make
+        ``fetch_period`` open absent timesteps and either error or stall mid-ingest.
+        """
         clamped_start = max(start[:10], f"{DATA_START_YEAR}-01-01")
-        return daily_period_ids(clamped_start, end[:10])
+        cutoff = await asyncio.to_thread(self._latest_available)
+        return daily_period_ids(clamped_start, end[:10], cutoff=cutoff)
+
+    def _latest_available(self) -> str:
+        """Latest published seNorge day = last timestep of the most recent annual file.
+
+        seNorge_2018 lags real time and the current-year file is filled incrementally, so
+        probe the annual files newest-first and read the last ``time`` value of the first
+        one that opens. Falls back to the data start if none are reachable.
+        """
+        for year in range(date.today().year, DATA_START_YEAR - 1, -1):
+            url = f"{THREDDS_BASE}/seNorge2018_{year}.nc"
+            try:
+                ds = xr.open_dataset(url, engine="netcdf4", chunks={})
+            except (OSError, RuntimeError, ValueError):
+                continue  # year not published yet (or transient) — try the previous one
+            try:
+                last = ds["time"].values[-1]
+            finally:
+                ds.close()
+            return str(np.datetime_as_string(np.datetime64(last), unit="D"))
+        return f"{DATA_START_YEAR}-01-01"
 
     async def fetch_period(self, period_id: str, bbox: list[float], **_: Any) -> xr.Dataset:
         """Fetch one day from the annual THREDDS OPeNDAP file, clipped to bbox."""
