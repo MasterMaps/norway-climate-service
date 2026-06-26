@@ -94,5 +94,5 @@
   source: Derived (climate_anomaly workflow)
   display:
     colormap: rdbu_r
-    range: [-15.0, 15.0]
+    range: [-5.0, 5.0]
     nodata: -999.99
