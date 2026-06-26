@@ -77,3 +77,22 @@
     colormap: rdbu_r
     range: [-30.0, 30.0]
     nodata: -999.99
+
+# Daily temperature anomaly (observed - day-of-year normal) produced by the
+# `climate_anomaly` openEO workflow: pair senorge_temperature_daily with
+# senorge_temperature_daily_normal_1991_2020. Static output template; diverging
+# rdbu_r centred on zero (warm = red).
+- id: senorge_temperature_daily_anomaly_1991_2020
+  name: Daily mean temperature anomaly (seNorge 2018, vs 1991–2020 normal)
+  short_name: Temperature daily anomaly
+  variable: tg
+  period_type: daily
+  sync:
+    kind: static
+  source_crs: EPSG:32633
+  units: degC
+  source: Derived (climate_anomaly workflow)
+  display:
+    colormap: rdbu_r
+    range: [-15.0, 15.0]
+    nodata: -999.99
