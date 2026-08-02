@@ -4,7 +4,8 @@ version = "0.1.0"
 requires-python = ">=3.13"
 description = "Open Climate Service instance for Norway"
 dependencies = [
-    "open-climate-service @ git+https://github.com/dhis2/open-climate-service.git",
+    "open-climate-service[server] @ git+https://github.com/dhis2/open-climate-service.git",
+    "osc-senorge-plugin @ git+https://github.com/MasterMaps/osc-senorge-plugin.git",
     "dhis2eo>=1.2.1",
 ]
 
@@ -26,4 +27,8 @@ override-dependencies = [
 ]
 
 [tool.uv.sources]
-open-climate-service = { git = "https://github.com/dhis2/open-climate-service.git", branch = "main" }
+# TODO: move back to branch "main" once dhis2/open-climate-service#118 (installable
+# plugin discovery) merges — that's what auto-discovers the seNorge plugin below.
+open-climate-service = { git = "https://github.com/dhis2/open-climate-service.git", branch = "feat/entry-point-plugins" }
+# seNorge source datasets + download plugin, now an installable package.
+osc-senorge-plugin = { git = "https://github.com/MasterMaps/osc-senorge-plugin.git", branch = "main" }
