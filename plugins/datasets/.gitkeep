@@ -1,0 +1,3 @@
+# Instance-local dataset overrides go here. seNorge datasets now come from the
+# installed osc-senorge-plugin; drop YAML templates in this folder to add or
+# override datasets locally (they take precedence over installed plugins).
