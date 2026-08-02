@@ -1727,7 +1727,7 @@ wheels = [
 [[package]]
 name = "open-climate-service"
 version = "0.1.0"
-source = { git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fentry-point-plugins#26340b1692fe231e64c46847a277b603f6268aca" }
+source = { git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fentry-point-plugins#c930050b8772955b89107d945cb92142e58ddd75" }
 dependencies = [
     { name = "httpx" },
     { name = "pystac" },
