@@ -1,62 +1,8 @@
-- id: senorge_temperature_daily
-  name: Daily mean temperature (seNorge 2018)
-  short_name: Mean temperature
-  standard_name: air_temperature
-  variable: tg
-  period_type: daily
-  sync:
-    kind: temporal
-    execution: append
-  extents:
-    spatial:
-      bbox: [4.5, 57.9, 31.1, 71.2]
-    temporal:
-      begin: "1957-01-01"
-      resolution: P1D
-  ingestion:
-    plugin: datasets.senorge.SeNorgePlugin
-    params:
-      variable: tg
-  source_crs: EPSG:32633
-  units: degC
-  cell_methods: "time: mean"
-  resolution: 1 km x 1 km
-  source: seNorge 2018
-  source_url: https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html
-  display:
-    colormap: rdbu_r
-    range: [-30.0, 30.0]
-    nodata: -999.99
-
-- id: senorge_precipitation_daily
-  name: Daily precipitation (seNorge 2018)
-  short_name: Precipitation
-  standard_name: lwe_precipitation_rate
-  variable: rr
-  period_type: daily
-  sync:
-    kind: temporal
-    execution: append
-  extents:
-    spatial:
-      bbox: [4.5, 57.9, 31.1, 71.2]
-    temporal:
-      begin: "1957-01-01"
-      resolution: P1D
-  ingestion:
-    plugin: datasets.senorge.SeNorgePlugin
-    params:
-      variable: rr
-  source_crs: EPSG:32633
-  units: mm/d
-  cell_methods: "time: mean"
-  resolution: 1 km x 1 km
-  source: seNorge 2018
-  source_url: https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html
-  display:
-    colormap: blues
-    range: [0.0, 50.0]
-    nodata: -9999.0
+# Derived seNorge products, specific to this instance. The source datasets
+# (senorge_temperature_daily, senorge_precipitation_daily) and the download plugin
+# now come from the installable open-climate-service-senorge-plugin package. These
+# static templates are outputs of workflows run against those source datasets and
+# stay here in the instance's plugins_dir.
 
 # Day-of-year temperature normal (1991–2020) produced from the ingested
 # senorge_temperature_daily store by the `climate_normal` openEO workflow. Static

@@ -1562,12 +1562,14 @@ source = { virtual = "." }
 dependencies = [
     { name = "dhis2eo" },
     { name = "open-climate-service", extra = ["server"] },
+    { name = "open-climate-service-senorge-plugin" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "dhis2eo", specifier = ">=1.2.1" },
-    { name = "open-climate-service", extras = ["server"], git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fopeneo-anomaly" },
+    { name = "open-climate-service", extras = ["server"], git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fentry-point-plugins" },
+    { name = "open-climate-service-senorge-plugin", git = "https://github.com/MasterMaps/open-climate-service-senorge-plugin.git?branch=main" },
 ]
 
 [[package]]
@@ -1725,7 +1727,7 @@ wheels = [
 [[package]]
 name = "open-climate-service"
 version = "0.1.0"
-source = { git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fopeneo-anomaly#93340a437a9290f25715f241b087723f1fe57dfb" }
+source = { git = "https://github.com/dhis2/open-climate-service.git?branch=feat%2Fentry-point-plugins#26340b1692fe231e64c46847a277b603f6268aca" }
 dependencies = [
     { name = "httpx" },
     { name = "pystac" },
@@ -1747,6 +1749,7 @@ server = [
     { name = "odc-stac" },
     { name = "openeo-pg-parser-networkx" },
     { name = "openeo-processes-dask" },
+    { name = "pandas" },
     { name = "planetary-computer" },
     { name = "portalocker" },
     { name = "pystac-client" },
@@ -1762,6 +1765,14 @@ server = [
     { name = "xstac" },
     { name = "xvec" },
     { name = "zarr" },
+]
+
+[[package]]
+name = "open-climate-service-senorge-plugin"
+version = "0.1.0"
+source = { git = "https://github.com/MasterMaps/open-climate-service-senorge-plugin.git?branch=main#570ceb8d934695ceb38b15446811bfe6a12255e6" }
+dependencies = [
+    { name = "open-climate-service" },
 ]
 
 [[package]]
