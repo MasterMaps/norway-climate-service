@@ -27,8 +27,6 @@ override-dependencies = [
 ]
 
 [tool.uv.sources]
-# TODO: move back to branch "main" once dhis2/open-climate-service#118 (installable
-# plugin discovery) merges — that's what auto-discovers the seNorge plugin below.
-open-climate-service = { git = "https://github.com/dhis2/open-climate-service.git", branch = "feat/entry-point-plugins" }
+open-climate-service = { git = "https://github.com/dhis2/open-climate-service.git", branch = "main" }
 # seNorge source datasets + download plugin, now an installable package.
 osc-senorge-plugin = { git = "https://github.com/MasterMaps/osc-senorge-plugin.git", branch = "main" }
