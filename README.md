@@ -48,8 +48,5 @@ Example using `curl`:
 ```sh
 curl -X POST http://localhost:8000/ingestions \
   -H "Content-Type: application/json" \
-  -d '{
-        "dataset": "senorge_temperature_daily",
-        "source": "data/downloads/senorge_temperature_daily_1990-01.nc"
-      }'
+  -d '{"dataset_id": "senorge_temperature_daily", "temporal_extent": ["1990-01-01", "1990-01-31"]}'
 ```
