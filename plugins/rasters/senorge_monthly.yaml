@@ -1,0 +1,108 @@
+# Monthly mean temperature aggregated from the ingested senorge_temperature_daily store
+# (mean of daily means, as MET Norway computes tgmean_mon). Output template for an openEO
+# aggregate_temporal_period job; no ingestion plugin, the data is written by save_result.
+- id: senorge_temperature_monthly
+  name: Monthly mean temperature (seNorge 2018)
+  short_name: Temperature monthly
+  description: >-
+    Monthly mean temperature over Norway at 1 km, the mean of the daily mean temperatures in
+    seNorge 2018 (MET Norway), computed by this service from the ingested daily dataset. Matches
+    MET Norway's own monthly means (tgmean_mon) to within 0.01 degC for 99.5% of cells, 1990-2022.
+  variable: tg
+  period_type: monthly
+  sync:
+    kind: static
+  source_crs: EPSG:32633
+  units: degC
+  resolution: 1 km x 1 km
+  source: Derived from seNorge 2018 daily mean temperature
+  source_url: https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html
+  license: CC-BY-4.0
+  providers:
+    - name: MET Norway
+      url: https://www.met.no/
+  display:
+    colormap: rdbu_r
+    range: [-20.0, 20.0]
+    nodata: -999.99
+
+# Monthly precipitation total aggregated from the ingested senorge_precipitation_daily store:
+# the sum of daily totals (mm per month). Written by an openEO job with xclim's `prcptot`
+# (freq MS), which converts the daily rate (mm/d) to an amount (mm) and keeps cells outside
+# the grid missing; plain `sum` keeps mm/d and is refused by the units check.
+- id: senorge_precipitation_monthly
+  name: Monthly precipitation (seNorge 2018)
+  short_name: Precipitation monthly
+  description: >-
+    Monthly precipitation total over Norway at 1 km, the sum of the daily totals in seNorge 2018
+    (MET Norway), computed by this service from the ingested daily dataset with xclim's prcptot.
+  standard_name: lwe_thickness_of_precipitation_amount
+  variable: rr
+  period_type: monthly
+  sync:
+    kind: static
+  source_crs: EPSG:32633
+  units: mm
+  cell_methods: "time: sum"
+  resolution: 1 km x 1 km
+  source: Derived from seNorge 2018 daily precipitation
+  source_url: https://thredds.met.no/thredds/catalog/senorge/seNorge_2018/Archive/catalog.html
+  license: CC-BY-4.0
+  providers:
+    - name: MET Norway
+      url: https://www.met.no/
+  display:
+    colormap: blues
+    range: [0.0, 400.0]
+    nodata: -999.99
+
+# Monthly normals 1991–2020, produced by the `climate_normal` workflow (frequency: month) from
+# the two monthly datasets above. Static output templates; the reference period is in the id.
+- id: senorge_temperature_monthly_normal_1991_2020
+  name: Monthly mean temperature normal (seNorge 2018, 1991–2020)
+  short_name: Temperature monthly normal
+  description: >-
+    The 1991–2020 normal of monthly mean temperature over Norway at 1 km: for each calendar
+    month, the mean of that month's values over the 30 years, computed by this service from the
+    monthly dataset with the climate_normal workflow.
+  variable: tg
+  period_type: climatology
+  sync:
+    kind: static
+  source_crs: EPSG:32633
+  units: degC
+  resolution: 1 km x 1 km
+  source: Derived from seNorge 2018 monthly mean temperature
+  license: CC-BY-4.0
+  providers:
+    - name: MET Norway
+      url: https://www.met.no/
+  display:
+    colormap: rdbu_r
+    range: [-20.0, 20.0]
+    nodata: -999.99
+
+- id: senorge_precipitation_monthly_normal_1991_2020
+  name: Monthly precipitation normal (seNorge 2018, 1991–2020)
+  short_name: Precipitation monthly normal
+  description: >-
+    The 1991–2020 normal of monthly precipitation over Norway at 1 km: for each calendar month,
+    the mean of that month's totals over the 30 years, computed by this service from the monthly
+    dataset with the climate_normal workflow.
+  variable: rr
+  period_type: climatology
+  sync:
+    kind: static
+  source_crs: EPSG:32633
+  units: mm
+  cell_methods: "time: sum"
+  resolution: 1 km x 1 km
+  source: Derived from seNorge 2018 monthly precipitation
+  license: CC-BY-4.0
+  providers:
+    - name: MET Norway
+      url: https://www.met.no/
+  display:
+    colormap: blues
+    range: [0.0, 400.0]
+    nodata: -999.99

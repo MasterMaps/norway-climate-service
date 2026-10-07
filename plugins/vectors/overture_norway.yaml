@@ -1,0 +1,51 @@
+# Norway's first three administrative levels from Overture Maps, one collection per level:
+# the country (level 0), fylker (Overture `region`, 15) and kommuner (`county`, 357); `class: land`
+# drops the maritime variants Overture also publishes for each. Country defaults to the
+# instance's extent.country_code (NOR). Bumping `release` selects what the next provider run
+# extracts; it does not trigger one.
+#
+# LICENCE: ODbL-1.0 (divisions incorporate OpenStreetMap) — attribution plus share-alike.
+- id: norway_country
+  name: Norway (Overture Maps)
+  description: >-
+    Norway's national boundary, administrative level 0, from Overture Maps divisions.
+  license: ODbL-1.0
+  attribution: © OpenStreetMap contributors, © Overture Maps Foundation
+  id_property: id
+  provider: overture
+  params:
+    release: 2026-09-23.0
+    theme: divisions
+    filters:
+      subtype: country
+      class: land
+
+- id: norway_fylker
+  name: Fylker (Overture Maps)
+  description: >-
+    Norway's counties (fylker), administrative level 1, from Overture Maps divisions.
+  license: ODbL-1.0
+  attribution: © OpenStreetMap contributors, © Overture Maps Foundation
+  id_property: id
+  provider: overture
+  params:
+    release: 2026-09-23.0
+    theme: divisions
+    filters:
+      subtype: region
+      class: land
+
+- id: norway_kommuner
+  name: Kommuner (Overture Maps)
+  description: >-
+    Norway's municipalities (kommuner), administrative level 2, from Overture Maps divisions.
+  license: ODbL-1.0
+  attribution: © OpenStreetMap contributors, © Overture Maps Foundation
+  id_property: id
+  provider: overture
+  params:
+    release: 2026-09-23.0
+    theme: divisions
+    filters:
+      subtype: county
+      class: land
