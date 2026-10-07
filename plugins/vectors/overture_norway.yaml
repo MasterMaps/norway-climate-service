@@ -11,6 +11,9 @@
     Norway's national boundary, administrative level 0, from Overture Maps divisions.
   license: ODbL-1.0
   attribution: © OpenStreetMap contributors, © Overture Maps Foundation
+  providers:
+    - name: Overture Maps
+      url: https://overturemaps.org
   id_property: id
   provider: overture
   params:
@@ -26,6 +29,9 @@
     Norway's counties (fylker), administrative level 1, from Overture Maps divisions.
   license: ODbL-1.0
   attribution: © OpenStreetMap contributors, © Overture Maps Foundation
+  providers:
+    - name: Overture Maps
+      url: https://overturemaps.org
   id_property: id
   provider: overture
   params:
@@ -41,6 +47,9 @@
     Norway's municipalities (kommuner), administrative level 2, from Overture Maps divisions.
   license: ODbL-1.0
   attribution: © OpenStreetMap contributors, © Overture Maps Foundation
+  providers:
+    - name: Overture Maps
+      url: https://overturemaps.org
   id_property: id
   provider: overture
   params:
